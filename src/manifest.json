@@ -1,0 +1,22 @@
+{
+  "name": "Beskarschmiede Amazon Link",
+  "description": "Leitet dich automatisch bei deinem Besuch auf Amazon auf den Beskarschmieden Referenzlink um",
+  "version": "1.0.0",
+
+  "manifest_version": 2,
+
+  "background": {"scripts":["background.js"]},
+  "permissions": [
+    "<all_urls>",
+    "tabs"
+  ],
+
+  "browser_action": {
+    "default_icon": "icon.png"
+  },
+
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png"
+  }
+}
