@@ -1,22 +1,28 @@
-var host = "?&tag=beskarschmied-21&camp=4582&creative=670874&linkCode=ur1&adid=03MN9N1SRC0AG8BK6ADV&";
-var timers = [];
-var link = "amazon.";
+var affiliateTag = "tag=beskarschmied-21";
+var amazonAddress = "amazon.de";
 
 chrome.tabs.onUpdated.addListener(
-  function(tabId, changeInfo, tab) {
-    var currentTime = Date();
-
-    if(timers[tabId] == null || (currentTime - timers[tabId]) === (20 * 60 * 1000))
-    {
-      timers[tabId] = currentTime;
-
-      var tmp = tab.url;
-      if(tmp.indexOf(host) == -1) {
-        if(tmp.indexOf(link) > -1) {
-          tmp += host;
-          chrome.tabs.update(tabId, { url: tmp} );
-        }
-      }
-    }
-  }
+	function(tabId, changeInfo, tab) {
+		var tabUrl = tab.url;
+		if(tabUrl.indexOf(affiliateTag) === -1) {
+			if(tabUrl.indexOf(amazonAddress) > -1) {
+				chrome.storage.local.get("lastTime", function(data){
+					var lastTime = isNaN(data.lastTime) ? null : new Date(parseInt(data.lastTime));
+					var currentTime = new Date();
+					console.log(currentTime);
+					console.log(lastTime);
+					console.log(currentTime.getTime() - lastTime.getTime());
+					if(lastTime === null || (currentTime.getTime() - lastTime.getTime()) > (20 * 60 * 1000)){
+						if(tabUrl.indexOf("?") === -1) {
+							tabUrl += "&" + affiliateTag;
+						} else {
+							tabUrl += "?" + affiliateTag;
+						}
+						chrome.storage.local.set({'lastTime': +new Date()});
+						chrome.tabs.update(tabId, { url: tabUrl} );
+					}
+				});
+			}
+		}
+	}
 );
